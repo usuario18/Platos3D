@@ -31,7 +31,6 @@
       overflow-x: hidden;
     }
 
-    /* ── NAV ── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
@@ -54,14 +53,12 @@
       text-transform: uppercase;
     }
 
-    /* ── HERO ── */
     .hero {
       min-height: 100vh;
       display: grid;
       grid-template-columns: 1fr 1fr;
       padding-top: 65px;
     }
-
     .hero-left {
       display: flex;
       flex-direction: column;
@@ -69,7 +66,6 @@
       padding: 60px 40px 60px 60px;
       border-right: 1px solid var(--border);
     }
-
     .hero-label {
       font-size: 10px;
       letter-spacing: 3px;
@@ -77,7 +73,6 @@
       color: var(--accent);
       margin-bottom: 24px;
     }
-
     .hero-title {
       font-family: var(--serif);
       font-size: clamp(40px, 5vw, 68px);
@@ -86,7 +81,6 @@
       margin-bottom: 24px;
       color: var(--text);
     }
-
     .hero-desc {
       color: var(--muted);
       line-height: 1.8;
@@ -94,7 +88,6 @@
       margin-bottom: 40px;
       font-size: 13px;
     }
-
     .btn {
       display: inline-flex;
       align-items: center;
@@ -103,7 +96,6 @@
       color: #0d0d0d;
       font-family: var(--mono);
       font-size: 12px;
-      font-weight: 400;
       letter-spacing: 1px;
       text-transform: uppercase;
       padding: 14px 28px;
@@ -116,14 +108,11 @@
     .btn:hover { opacity: 0.85; }
     .btn svg { width: 14px; height: 14px; }
 
-    /* ── VISOR ── */
     .hero-right {
       display: flex;
       flex-direction: column;
-      position: relative;
       background: var(--surface);
     }
-
     .viewer-header {
       display: flex;
       align-items: center;
@@ -133,31 +122,50 @@
       flex-shrink: 0;
     }
     .viewer-dots { display: flex; gap: 7px; }
-    .dot {
-      width: 10px; height: 10px; border-radius: 50%;
-      background: var(--border);
-    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
     .dot:first-child { background: #ff5f57; }
     .dot:nth-child(2) { background: #febc2e; }
     .dot:last-child  { background: #28c840; }
-
     .viewer-controls {
-      display: flex;
-      gap: 16px;
-      font-size: 10px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
+      display: flex; gap: 16px;
+      font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
       color: var(--muted);
     }
     .ctrl-active { color: var(--accent); }
 
     model-viewer {
       width: 100%;
-      flex: 1;
-      min-height: 500px;
       background: transparent;
       --poster-color: transparent;
     }
+    .hero-right model-viewer {
+      flex: 1;
+      min-height: 500px;
+    }
+    model-viewer::part(default-ar-button) { display: none; }
+
+    /* Botón AR personalizado */
+    .ar-btn {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--accent);
+      color: #0d0d0d;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 10px 16px;
+      border: none;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: opacity .2s;
+    }
+    .ar-btn:hover { opacity: 0.85; }
+    .ar-btn svg { width: 16px; height: 16px; }
 
     .viewer-footer {
       display: flex;
@@ -165,49 +173,31 @@
       justify-content: space-between;
       padding: 12px 24px;
       border-top: 1px solid var(--border);
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 1px;
-      text-transform: uppercase;
+      font-size: 10px; color: var(--muted);
+      letter-spacing: 1px; text-transform: uppercase;
       flex-shrink: 0;
     }
-
     .status-dot {
       display: inline-block;
       width: 6px; height: 6px;
-      background: var(--accent);
-      border-radius: 50%;
+      background: var(--accent); border-radius: 50%;
       margin-right: 6px;
       animation: pulse 2s ease-in-out infinite;
     }
-    @keyframes pulse {
-      0%,100% { opacity: 1; }
-      50%      { opacity: 0.3; }
-    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-    /* ── GALERÍA ── */
+    /* GALERÍA */
     .gallery {
       padding: 80px 60px;
       border-top: 1px solid var(--border);
     }
-
     .gallery-header {
-      display: flex;
-      align-items: flex-end;
+      display: flex; align-items: flex-end;
       justify-content: space-between;
       margin-bottom: 48px;
     }
-    .gallery-title {
-      font-family: var(--serif);
-      font-size: 36px;
-      letter-spacing: -0.5px;
-    }
-    .gallery-count {
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 2px;
-      padding-bottom: 6px;
-    }
+    .gallery-title { font-family: var(--serif); font-size: 36px; letter-spacing: -0.5px; }
+    .gallery-count { font-size: 11px; color: var(--muted); letter-spacing: 2px; padding-bottom: 6px; }
 
     .gallery-grid {
       display: grid;
@@ -216,107 +206,54 @@
       background: var(--border);
       border: 1px solid var(--border);
     }
-
     .model-card {
       background: var(--surface);
-      cursor: pointer;
       transition: background .2s;
       position: relative;
-      overflow: hidden;
     }
     .model-card:hover { background: #1a1a1a; }
-    .model-card:hover .card-arrow { transform: translate(3px,-3px); }
 
+    .card-viewer-wrap { position: relative; }
     .card-viewer {
-      width: 100%;
-      height: 260px;
-      display: block;
-      background: transparent;
-      --poster-color: transparent;
+      width: 100%; height: 280px; display: block;
+      background: transparent; --poster-color: transparent;
       pointer-events: none;
     }
-
-    .card-info {
-      padding: 20px 24px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .card-ar-btn {
+      position: absolute;
+      bottom: 12px; right: 12px;
+      display: flex; align-items: center; gap: 6px;
+      background: var(--accent);
+      color: #0d0d0d;
+      font-family: var(--mono);
+      font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+      padding: 8px 12px;
+      border: none; cursor: pointer; border-radius: 2px;
+      transition: opacity .2s;
+      z-index: 10;
     }
+    .card-ar-btn:hover { opacity: 0.85; }
+    .card-ar-btn svg { width: 14px; height: 14px; }
+
     .card-name {
       font-family: var(--serif);
-      font-size: 16px;
-      margin-bottom: 2px;
-    }
-    .card-meta {
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-    .card-arrow {
       font-size: 18px;
-      color: var(--accent);
-      transition: transform .2s;
-      line-height: 1;
+      padding: 18px 24px;
+      border-top: 1px solid var(--border);
     }
 
-    /* ── INSTRUCCIONES ── */
-    .instructions {
-      margin: 0 60px 80px;
-      padding: 32px 36px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-    }
-    .instructions-title {
-      font-size: 10px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 20px;
-    }
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
-    }
-    .step-num {
-      font-family: var(--serif);
-      font-size: 32px;
-      color: var(--border);
-      margin-bottom: 8px;
-    }
-    .step-text {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-    .step-text code {
-      color: var(--accent);
-      background: rgba(200,245,66,.08);
-      padding: 1px 5px;
-      border-radius: 2px;
-    }
-
-    /* ── FOOTER ── */
     footer {
       border-top: 1px solid var(--border);
       padding: 24px 60px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--muted);
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 11px; color: var(--muted);
     }
 
-    /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .hero { grid-template-columns: 1fr; }
       .hero-left { border-right: none; border-bottom: 1px solid var(--border); padding: 40px 24px; }
       nav { padding: 16px 24px; }
       .gallery { padding: 48px 24px; }
-      .steps { grid-template-columns: 1fr; gap: 20px; }
-      .instructions { margin: 0 24px 48px; }
       footer { padding: 20px 24px; flex-direction: column; gap: 8px; text-align: center; }
       .gallery-grid { grid-template-columns: 1fr; }
     }
@@ -329,14 +266,13 @@
     <span class="nav-tag">Portafolio · Modelado</span>
   </nav>
 
-  <!-- HERO -->
   <section class="hero">
     <div class="hero-left">
       <p class="hero-label">Visor interactivo</p>
       <h1 class="hero-title">Modelos<br>en 3D,<br>sin límites.</h1>
       <p class="hero-desc">
         Explora mis proyectos de modelado directamente en el navegador.
-        Rota, acerca y examina cada detalle sin necesidad de software externo.
+        Rota, acerca y examina cada detalle. En celular, activa AR para verlo en tu mesa de verdad.
       </p>
       <a href="#galeria" class="btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -347,22 +283,15 @@
     <div class="hero-right">
       <div class="viewer-header">
         <div class="viewer-dots">
-          <div class="dot"></div>
-          <div class="dot"></div>
-          <div class="dot"></div>
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
         </div>
         <div class="viewer-controls">
           <span class="ctrl-active">Rotar</span>
           <span>Zoom</span>
-          <span>AR</span>
+          <span class="ctrl-active">AR</span>
         </div>
       </div>
 
-      <!--
-        ╔══════════════════════════════════════════════════════╗
-        ║  REEMPLAZA "tu-modelo.glb" con la ruta a tu archivo ║
-        ╚══════════════════════════════════════════════════════╝
-      -->
       <model-viewer
         src="plato.glb"
         alt="Plato 3D"
@@ -372,80 +301,102 @@
         rotation-per-second="20deg"
         shadow-intensity="1"
         environment-image="neutral"
-        exposure="0.9">
+        exposure="0.9"
+        ar
+        ar-modes="webxr scene-viewer quick-look"
+        ar-scale="auto">
+
+        <button class="ar-btn" slot="ar-button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
+            <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+            <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
+            <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+            <path d="M12 8l4 2v4l-4 2-4-2v-4l4-2z"/>
+          </svg>
+          Ver en AR
+        </button>
       </model-viewer>
 
       <div class="viewer-footer">
         <span><span class="status-dot"></span>Interactivo</span>
-        <span>Arrastra para rotar · Scroll para zoom</span>
+        <span>Arrastra para rotar · AR en celular</span>
       </div>
     </div>
   </section>
 
-  <!-- GALERÍA -->
   <section class="gallery" id="galeria">
     <div class="gallery-header">
       <h2 class="gallery-title">Galería</h2>
-      <span class="gallery-count">01 modelo</span>
+      <span class="gallery-count">02 modelos</span>
     </div>
 
     <div class="gallery-grid">
 
-      <!-- PLATO -->
       <div class="model-card">
-        <model-viewer
-          class="card-viewer"
-          src="plato.glb"
-          alt="Plato"
-          auto-rotate
-          camera-controls
-          shadow-intensity="0.8"
-          environment-image="neutral"
-          exposure="0.9">
-        </model-viewer>
-        <div class="card-info">
-          <div>
-            <div class="card-name">Plato</div>
-            <div class="card-meta">Modelado 3D · 2024</div>
-          </div>
-          <span class="card-arrow">↗</span>
+        <div class="card-viewer-wrap">
+          <model-viewer
+            class="card-viewer"
+            src="plato.glb"
+            alt="Plato"
+            auto-rotate
+            camera-controls
+            shadow-intensity="0.8"
+            environment-image="neutral"
+            exposure="0.9"
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            ar-scale="auto">
+          </model-viewer>
+          <button class="card-ar-btn" onclick="this.closest('.card-viewer-wrap').querySelector('model-viewer').activateAR()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
+              <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+              <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
+              <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+              <path d="M12 8l4 2v4l-4 2-4-2v-4l4-2z"/>
+            </svg>
+            Ver en AR
+          </button>
         </div>
+        <div class="card-name">Plato</div>
+      </div>
+
+      <div class="model-card">
+        <div class="card-viewer-wrap">
+          <model-viewer
+            class="card-viewer"
+            src="platoB.glb"
+            alt="Plato B"
+            auto-rotate
+            camera-controls
+            shadow-intensity="0.8"
+            environment-image="neutral"
+            exposure="0.9"
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            ar-scale="auto">
+          </model-viewer>
+          <button class="card-ar-btn" onclick="this.closest('.card-viewer-wrap').querySelector('model-viewer').activateAR()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
+              <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+              <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
+              <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+              <path d="M12 8l4 2v4l-4 2-4-2v-4l4-2z"/>
+            </svg>
+            Ver en AR
+          </button>
+        </div>
+        <div class="card-name">Plato B</div>
       </div>
 
     </div>
   </section>
 
-  <!-- CÓMO PUBLICAR -->
-  <div class="instructions">
-    <p class="instructions-title">Cómo publicar esta página gratis</p>
-    <div class="steps">
-      <div>
-        <div class="step-num">01</div>
-        <p class="step-text">
-          Exporta tus modelos desde Blender como <code>.glb</code>
-          y ponlos en la misma carpeta que este <code>index.html</code>.
-        </p>
-      </div>
-      <div>
-        <div class="step-num">02</div>
-        <p class="step-text">
-          Crea un repositorio en <code>github.com</code>, sube todos los archivos
-          y activa <code>GitHub Pages</code> en Settings → Pages.
-        </p>
-      </div>
-      <div>
-        <div class="step-num">03</div>
-        <p class="step-text">
-          GitHub te da una URL pública gratuita tipo
-          <code>tuusuario.github.io/repo</code> en menos de 2 minutos.
-        </p>
-      </div>
-    </div>
-  </div>
-
   <footer>
     <span>Studio 3D — Portafolio</span>
-    <span>Sin logos de terceros · model-viewer by Google</span>
+    <span>model-viewer by Google</span>
   </footer>
 
 </body>
