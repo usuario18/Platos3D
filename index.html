@@ -237,6 +237,12 @@
 
     model-viewer {
       width: 100%; background: transparent; --poster-color: transparent;
+      /* Fix manchones en Samsung Browser */
+      image-rendering: auto;
+    }
+    /* Samsung Browser specific fix */
+    @supports (-webkit-touch-callout: none) {
+      model-viewer { --progress-bar-color: transparent; }
     }
     .featured-viewer model-viewer { flex: 1; min-height: 480px; }
     model-viewer::part(default-ar-button) { display: none; }
@@ -393,9 +399,10 @@
         auto-rotate
         auto-rotate-delay="1000"
         rotation-per-second="20deg"
-        shadow-intensity="1"
+        shadow-intensity="0"
+        tone-mapping="neutral"
         environment-image="neutral"
-        exposure="0.9"
+        exposure="1"
         ar
         ar-modes="webxr scene-viewer quick-look"
         ar-scale="auto">
@@ -428,8 +435,8 @@
       <div class="model-card">
         <div class="card-viewer-wrap">
           <model-viewer class="card-viewer" src="plato.glb" alt="Plato"
-            auto-rotate camera-controls shadow-intensity="0.8"
-            environment-image="neutral" exposure="0.9"
+            auto-rotate camera-controls shadow-intensity="0"
+            tone-mapping="neutral" environment-image="neutral" exposure="1"
             ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto">
           </model-viewer>
           <button class="card-ar-btn" onclick="this.closest('.card-viewer-wrap').querySelector('model-viewer').activateAR()">
@@ -447,8 +454,8 @@
       <div class="model-card">
         <div class="card-viewer-wrap">
           <model-viewer class="card-viewer" src="platoB.glb" alt="Plato B"
-            auto-rotate camera-controls shadow-intensity="0.8"
-            environment-image="neutral" exposure="0.9"
+            auto-rotate camera-controls shadow-intensity="0"
+            tone-mapping="neutral" environment-image="neutral" exposure="1"
             ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto">
           </model-viewer>
           <button class="card-ar-btn" onclick="this.closest('.card-viewer-wrap').querySelector('model-viewer').activateAR()">
@@ -466,8 +473,8 @@
       <div class="model-card">
         <div class="card-viewer-wrap">
           <model-viewer class="card-viewer" src="platoC.glb" alt="Plato C"
-            auto-rotate camera-controls shadow-intensity="0.8"
-            environment-image="neutral" exposure="0.9"
+            auto-rotate camera-controls shadow-intensity="0"
+            tone-mapping="neutral" environment-image="neutral" exposure="1"
             ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto">
           </model-viewer>
           <button class="card-ar-btn" onclick="this.closest('.card-viewer-wrap').querySelector('model-viewer').activateAR()">
@@ -485,8 +492,8 @@
       <div class="model-card">
         <div class="card-viewer-wrap">
           <model-viewer class="card-viewer" src="platoD.glb" alt="Plato D"
-            auto-rotate camera-controls shadow-intensity="0.8"
-            environment-image="neutral" exposure="0.9"
+            auto-rotate camera-controls shadow-intensity="0"
+            tone-mapping="neutral" environment-image="neutral" exposure="1"
             ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto">
           </model-viewer>
           <button class="card-ar-btn" onclick="this.closest('.card-viewer-wrap').querySelector('model-viewer').activateAR()">
@@ -505,8 +512,8 @@
         <div class="card-viewer-wrap">
           <model-viewer class="card-viewer" src="modelado_test_A.glb" alt="Modelado Test A"
             ios-src="modelado_test_A.usdz"
-            auto-rotate camera-controls shadow-intensity="0.8"
-            environment-image="neutral" exposure="0.9"
+            auto-rotate camera-controls shadow-intensity="0"
+            tone-mapping="neutral" environment-image="neutral" exposure="1"
             ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto">
           </model-viewer>
           <button class="card-ar-btn" onclick="this.closest('.card-viewer-wrap').querySelector('model-viewer').activateAR()">
