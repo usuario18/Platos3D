@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Platos 3D.cl</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0a0a0a;
+      --surface: #141414;
+      --border:  #222;
+      --accent:  #c8f542;
+      --text:    #f0ece0;
+      --muted:   #666;
+      --serif:   'DM Serif Display', serif;
+      --mono:    'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 14px;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 48px;
+    }
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 18px;
+      color: var(--text);
+      text-decoration: none;
+      opacity: 0.9;
+    }
+    .nav-cta {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text);
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 9px 20px;
+      transition: border-color .2s, color .2s;
+    }
+    .nav-cta:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── HERO FULLSCREEN ── */
+    .hero {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    /* Overlay oscuro sobre el video */
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(10,10,10,0.45) 0%,
+        rgba(10,10,10,0.3) 50%,
+        rgba(10,10,10,0.75) 100%
+      );
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 24px;
+    }
+
+    .hero-eyebrow {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp .8s .2s forwards;
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(56px, 10vw, 140px);
+      line-height: 0.95;
+      letter-spacing: -2px;
+      color: var(--text);
+      opacity: 0;
+      animation: fadeUp .9s .4s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      margin-top: 28px;
+      font-size: 14px;
+      color: rgba(240,236,224,0.6);
+      letter-spacing: 0.5px;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp .9s .6s forwards;
+    }
+
+    .hero-actions {
+      margin-top: 44px;
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp .9s .8s forwards;
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--accent); color: #0a0a0a;
+      font-family: var(--mono); font-size: 12px;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 15px 32px; border: none; cursor: pointer;
+      text-decoration: none; transition: opacity .2s;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: transparent; color: var(--text);
+      font-family: var(--mono); font-size: 12px;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 15px 32px;
+      border: 1px solid rgba(255,255,255,0.25);
+      cursor: pointer; text-decoration: none; transition: border-color .2s;
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Scroll indicator */
+    .scroll-hint {
+      position: absolute;
+      bottom: 32px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      opacity: 0;
+      animation: fadeIn 1s 1.2s forwards;
+    }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.35), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%,100% { opacity: 0.4; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.1); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+
+    /* ── SECCIÓN VISOR DESTACADO ── */
+    .featured {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-top: 1px solid var(--border);
+    }
+    .featured-info {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 80px 60px;
+      border-right: 1px solid var(--border);
+    }
+    .section-label {
+      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 20px;
+    }
+    .featured-title {
+      font-family: var(--serif);
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 1.1; margin-bottom: 20px;
+    }
+    .featured-desc {
+      color: var(--muted); font-size: 13px; line-height: 1.8;
+      max-width: 360px; margin-bottom: 36px;
+    }
+
+    .featured-viewer {
+      background: var(--surface);
+      display: flex; flex-direction: column;
+    }
+    .viewer-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .viewer-dots { display: flex; gap: 7px; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--border); }
+    .dot:first-child { background: #ff5f57; }
+    .dot:nth-child(2) { background: #febc2e; }
+    .dot:last-child  { background: #28c840; }
+    .viewer-tags {
+      display: flex; gap: 14px;
+      font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted);
+    }
+    .tag-on { color: var(--accent); }
+
+    model-viewer {
+      width: 100%; background: transparent; --poster-color: transparent;
+    }
+    .featured-viewer model-viewer { flex: 1; min-height: 480px; }
+    model-viewer::part(default-ar-button) { display: none; }
+
+    .ar-btn {
+      position: absolute; bottom: 16px; right: 16px;
+      display: flex; align-items: center; gap: 7px;
+      background: var(--accent); color: #0a0a0a;
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 1px; text-transform: uppercase;
+      padding: 10px 16px; border: none; cursor: pointer;
+      border-radius: 2px; transition: opacity .2s;
+    }
+    .ar-btn:hover { opacity: 0.85; }
+    .ar-btn svg { width: 15px; height: 15px; }
+
+    .viewer-foot {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 24px; border-top: 1px solid var(--border);
+      font-size: 10px; color: var(--muted);
+      letter-spacing: 1px; text-transform: uppercase;
+    }
+    .status-dot {
+      display: inline-block; width: 6px; height: 6px;
+      background: var(--accent); border-radius: 50%; margin-right: 6px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    /* ── GALERÍA ── */
+    .gallery { padding: 80px 60px; border-top: 1px solid var(--border); }
+    .gallery-header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 48px;
+    }
+    .gallery-title { font-family: var(--serif); font-size: 36px; letter-spacing: -0.5px; }
+    .gallery-count { font-size: 11px; color: var(--muted); letter-spacing: 2px; padding-bottom: 4px; }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1px; background: var(--border); border: 1px solid var(--border);
+    }
+    .model-card { background: var(--surface); transition: background .2s; }
+    .model-card:hover { background: #1a1a1a; }
+
+    .card-viewer-wrap { position: relative; }
+    .card-viewer {
+      width: 100%; height: 280px; display: block;
+      background: transparent; --poster-color: transparent;
+      pointer-events: none;
+    }
+    .card-ar-btn {
+      position: absolute; bottom: 12px; right: 12px;
+      display: flex; align-items: center; gap: 6px;
+      background: var(--accent); color: #0a0a0a;
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 1px; text-transform: uppercase;
+      padding: 8px 12px; border: none; cursor: pointer;
+      border-radius: 2px; transition: opacity .2s; z-index: 10;
+    }
+    .card-ar-btn:hover { opacity: 0.85; }
+    .card-ar-btn svg { width: 13px; height: 13px; }
+    .card-name {
+      font-family: var(--serif); font-size: 18px;
+      padding: 18px 24px; border-top: 1px solid var(--border);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 11px; color: var(--muted);
+    }
+    .footer-logo { font-family: var(--serif); font-size: 16px; color: var(--text); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .hero-title { letter-spacing: -1px; }
+      .featured { grid-template-columns: 1fr; }
+      .featured-info { border-right: none; border-bottom: 1px solid var(--border); padding: 48px 24px; }
+      .gallery { padding: 48px 24px; }
+      footer { padding: 20px 24px; flex-direction: column; gap: 8px; text-align: center; }
+      .gallery-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="#" class="nav-logo">Platos 3D.cl</a>
+    <a href="#galeria" class="nav-cta">Ver galería</a>
+  </nav>
+
+  <!-- HERO FULLSCREEN -->
+  <section class="hero">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="video-background.mp4" type="video/mp4">
+    </video>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <p class="hero-eyebrow">Experiencia gastronómica inmersiva</p>
+      <h1 class="hero-title">Platos<br><em>3D.cl</em></h1>
+      <p class="hero-sub">Visualiza cada plato en 3D · Ponlo sobre tu mesa con AR</p>
+      <div class="hero-actions">
+        <a href="#galeria" class="btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          Ver platos
+        </a>
+        <a href="#visor" class="btn-outline">Explorar en 3D</a>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <div class="scroll-line"></div>
+      Scroll
+    </div>
+  </section>
+
+  <!-- VISOR DESTACADO -->
+  <section class="featured" id="visor">
+    <div class="featured-info">
+      <p class="section-label">Visor interactivo</p>
+      <h2 class="featured-title">Tócalo,<br>gíralo,<br>sírvelo.</h2>
+      <p class="featured-desc">
+        Explora cada plato en detalle. Rota, acerca y examina la presentación.
+        En celular, activa AR para verlo en tu propia mesa.
+      </p>
+      <a href="#galeria" class="btn-primary" style="font-size:11px;padding:13px 26px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Ver galería completa
+      </a>
+    </div>
+
+    <div class="featured-viewer">
+      <div class="viewer-bar">
+        <div class="viewer-dots">
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+        </div>
+        <div class="viewer-tags">
+          <span class="tag-on">Rotar</span>
+          <span>Zoom</span>
+          <span class="tag-on">AR</span>
+        </div>
+      </div>
+
+      <model-viewer
+        src="plato.glb"
+        alt="Plato 3D"
+        camera-controls
+        auto-rotate
+        auto-rotate-delay="1000"
+        rotation-per-second="20deg"
+        shadow-intensity="1"
+        environment-image="neutral"
+        exposure="0.9"
+        ar
+        ar-modes="webxr scene-viewer quick-look"
+        ar-scale="auto">
+        <button class="ar-btn" slot="ar-button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+            <path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+            <path d="M12 8l4 2v4l-4 2-4-2v-4l4-2z"/>
+          </svg>
+          Ver en AR
+        </button>
+      </model-viewer>
+
+      <div class="viewer-foot">
+        <span><span class="status-dot"></span>Interactivo</span>
+        <span>Arrastra · Zoom · AR en celular</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALERÍA -->
+  <section class="gallery" id="galeria">
+    <div class="gallery-header">
+      <h2 class="gallery-title">Galería</h2>
+      <span class="gallery-count">05 modelos</span>
+    </div>
+
+    <div class="gallery-grid">
+
+      <div class="model-card">
+        <div class="card-viewer-wrap">
+          <model-viewer class="card-viewer" src="plato.glb" alt="Plato"
+            auto-rotate camera-controls shadow-intensity="0.8"
+            environment-image="neutral" exposure="0.9"
+            ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto">
+          </model-viewer>
+          <button class="card-ar-btn" onclick="this.closest('.card-viewer-wrap').querySelector('model-viewer').activateAR()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+              <path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+              <path d="M12 8l4 2v4l-4 2-4-2v-4l4-2z"/>
+            </svg>
+            Ver en AR
+          </button>
+        </div>
+        <div class="card-name">Plato</div>
+      </div>
+
+      <div class="model-card">
+        <div class="card-viewer-wrap">
+          <model-viewer class="card-viewer" src="platoB.glb" alt="Plato B"
+            auto-rotate camera-controls shadow-intensity="0.8"
+            environment-image="neutral" exposure="0.9"
+            ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto">
+          </model-viewer>
+          <button class="card-ar-btn" onclick="this.closest('.card-viewer-wrap').querySelector('model-viewer').activateAR()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+              <path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+              <path d="M12 8l4 2v4l-4 2-4-2v-4l4-2z"/>
+            </svg>
+            Ver en AR
+          </button>
+        </div>
+        <div class="card-name">Plato B</div>
+      </div>
+
+      <div class="model-card">
+        <div class="card-viewer-wrap">
+          <model-viewer class="card-viewer" src="platoC.glb" alt="Plato C"
+            auto-rotate camera-controls shadow-intensity="0.8"
+            environment-image="neutral" exposure="0.9"
+            ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto">
+          </model-viewer>
+          <button class="card-ar-btn" onclick="this.closest('.card-viewer-wrap').querySelector('model-viewer').activateAR()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+              <path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+              <path d="M12 8l4 2v4l-4 2-4-2v-4l4-2z"/>
+            </svg>
+            Ver en AR
+          </button>
+        </div>
+        <div class="card-name">Plato C</div>
+      </div>
+
+      <div class="model-card">
+        <div class="card-viewer-wrap">
+          <model-viewer class="card-viewer" src="platoD.glb" alt="Plato D"
+            auto-rotate camera-controls shadow-intensity="0.8"
+            environment-image="neutral" exposure="0.9"
+            ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto">
+          </model-viewer>
+          <button class="card-ar-btn" onclick="this.closest('.card-viewer-wrap').querySelector('model-viewer').activateAR()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+              <path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+              <path d="M12 8l4 2v4l-4 2-4-2v-4l4-2z"/>
+            </svg>
+            Ver en AR
+          </button>
+        </div>
+        <div class="card-name">Plato D</div>
+      </div>
+
+      <div class="model-card">
+        <div class="card-viewer-wrap">
+          <model-viewer class="card-viewer" src="modelado_test_A.glb" alt="Modelado Test A"
+            ios-src="modelado_test_A.usdz"
+            auto-rotate camera-controls shadow-intensity="0.8"
+            environment-image="neutral" exposure="0.9"
+            ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto">
+          </model-viewer>
+          <button class="card-ar-btn" onclick="this.closest('.card-viewer-wrap').querySelector('model-viewer').activateAR()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+              <path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+              <path d="M12 8l4 2v4l-4 2-4-2v-4l4-2z"/>
+            </svg>
+            Ver en AR
+          </button>
+        </div>
+        <div class="card-name">Modelado Test A</div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <span class="footer-logo">Platos 3D.cl</span>
+    <span>model-viewer by Google</span>
+  </footer>
+
+</body>
+</html>
