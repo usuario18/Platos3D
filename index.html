@@ -420,7 +420,7 @@
   <section class="gallery" id="galeria">
     <div class="gallery-header">
       <h2 class="gallery-title">Galería</h2>
-      <span class="gallery-count">04 modelos</span>
+      <span class="gallery-count">05 modelos</span>
     </div>
 
     <div class="gallery-grid">
@@ -499,6 +499,26 @@
           </button>
         </div>
         <div class="card-name">Plato D</div>
+      </div>
+
+      <div class="model-card">
+        <div class="card-viewer-wrap">
+          <model-viewer class="card-viewer" src="modelado_test_A.glb" alt="Modelado Test A"
+            ios-src="modelado_test_A.usdz"
+            auto-rotate camera-controls shadow-intensity="0.8"
+            environment-image="neutral" exposure="0.9"
+            ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto">
+          </model-viewer>
+          <button class="card-ar-btn" onclick="this.closest('.card-viewer-wrap').querySelector('model-viewer').activateAR()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+              <path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+              <path d="M12 8l4 2v4l-4 2-4-2v-4l4-2z"/>
+            </svg>
+            Ver en AR
+          </button>
+        </div>
+        <div class="card-name">Modelado Test A</div>
       </div>
 
     </div>
