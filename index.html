@@ -330,6 +330,169 @@
       footer { padding: 20px 24px; flex-direction: column; gap: 8px; text-align: center; }
       .gallery-grid { grid-template-columns: 1fr; }
     }
+
+    /* ── CHAT WIDGET ── */
+    .chat-fab {
+      position: fixed; bottom: 32px; right: 32px; z-index: 1000;
+      width: 56px; height: 56px;
+      background: var(--accent); color: #0a0a0a;
+      border: none; cursor: pointer; border-radius: 2px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 32px rgba(200,245,66,0.25);
+      transition: opacity .2s, transform .2s;
+    }
+    .chat-fab:hover { opacity: 0.9; transform: scale(1.05); }
+    .chat-fab svg { width: 22px; height: 22px; }
+    .chat-fab .chat-fab-close { display: none; }
+    .chat-fab.open .chat-fab-icon { display: none; }
+    .chat-fab.open .chat-fab-close { display: block; }
+
+    .chat-panel {
+      position: fixed; bottom: 104px; right: 32px; z-index: 999;
+      width: 380px; max-height: 600px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+      transform: translateY(16px) scale(0.97);
+      opacity: 0; pointer-events: none;
+      transition: transform .25s cubic-bezier(.16,1,.3,1), opacity .2s;
+    }
+    .chat-panel.open {
+      transform: translateY(0) scale(1);
+      opacity: 1; pointer-events: all;
+    }
+
+    .chat-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .chat-header-dot {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .chat-header-title {
+      font-family: var(--serif); font-size: 15px; color: var(--text);
+    }
+    .chat-header-sub {
+      font-size: 10px; color: var(--muted); letter-spacing: 1px;
+      text-transform: uppercase; margin-left: auto;
+    }
+
+    .chat-messages {
+      flex: 1; overflow-y: auto; padding: 20px;
+      display: flex; flex-direction: column; gap: 14px;
+      min-height: 200px; max-height: 400px;
+    }
+    .chat-messages::-webkit-scrollbar { width: 3px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--border); }
+
+    .msg {
+      max-width: 88%; display: flex; flex-direction: column; gap: 4px;
+    }
+    .msg.user { align-self: flex-end; align-items: flex-end; }
+    .msg.assistant { align-self: flex-start; align-items: flex-start; }
+    .msg-bubble {
+      padding: 10px 14px; font-size: 13px; line-height: 1.6;
+      border-radius: 2px;
+    }
+    .msg.user .msg-bubble {
+      background: var(--accent); color: #0a0a0a;
+    }
+    .msg.assistant .msg-bubble {
+      background: #1e1e1e; color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .msg-time {
+      font-size: 9px; color: var(--muted); letter-spacing: 1px;
+    }
+
+    /* Sugerencias rápidas */
+    .chat-suggestions {
+      padding: 0 20px 12px;
+      display: flex; flex-wrap: wrap; gap: 7px;
+    }
+    .suggestion-chip {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.5px;
+      padding: 5px 11px;
+      border: 1px solid var(--border); background: transparent;
+      color: var(--muted); cursor: pointer; border-radius: 2px;
+      transition: border-color .15s, color .15s;
+      white-space: nowrap;
+    }
+    .suggestion-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+    .chat-input-row {
+      padding: 14px 16px;
+      border-top: 1px solid var(--border);
+      display: flex; gap: 10px; align-items: flex-end;
+    }
+    .chat-input {
+      flex: 1; background: transparent; border: 1px solid var(--border);
+      color: var(--text); font-family: var(--mono); font-size: 13px;
+      padding: 10px 14px; resize: none; outline: none;
+      border-radius: 2px; max-height: 100px; line-height: 1.5;
+      transition: border-color .2s;
+    }
+    .chat-input::placeholder { color: var(--muted); }
+    .chat-input:focus { border-color: rgba(200,245,66,0.4); }
+    .chat-send {
+      background: var(--accent); color: #0a0a0a;
+      border: none; cursor: pointer; padding: 10px 14px;
+      border-radius: 2px; transition: opacity .2s;
+      flex-shrink: 0;
+    }
+    .chat-send:hover { opacity: 0.85; }
+    .chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+    .chat-send svg { width: 16px; height: 16px; display: block; }
+
+    /* Typing indicator */
+    .typing-indicator {
+      display: flex; gap: 4px; align-items: center;
+      padding: 10px 14px;
+      background: #1e1e1e; border: 1px solid var(--border);
+      border-radius: 2px; width: fit-content;
+    }
+    .typing-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--muted); animation: typingBounce 1.2s ease-in-out infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: .2s; }
+    .typing-dot:nth-child(3) { animation-delay: .4s; }
+    @keyframes typingBounce {
+      0%,60%,100% { transform: translateY(0); }
+      30% { transform: translateY(-5px); background: var(--accent); }
+    }
+
+    /* Resultados de platos dentro del chat */
+    .chat-plates-result {
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .chat-plate-card {
+      background: #111; border: 1px solid var(--border);
+      padding: 10px 14px; border-radius: 2px;
+    }
+    .chat-plate-card-name {
+      font-family: var(--serif); font-size: 14px;
+      color: var(--accent); margin-bottom: 4px;
+    }
+    .chat-plate-card-tags {
+      display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px;
+    }
+    .chat-plate-tag {
+      font-size: 9px; letter-spacing: 1px; text-transform: uppercase;
+      padding: 2px 7px; border: 1px solid var(--border); color: var(--muted);
+      border-radius: 1px;
+    }
+    .chat-plate-tag.match { border-color: var(--accent); color: var(--accent); }
+
+    @media (max-width: 480px) {
+      .chat-panel { width: calc(100vw - 32px); right: 16px; bottom: 96px; }
+      .chat-fab { right: 16px; bottom: 20px; }
+    }
   </style>
 </head>
 <body>
@@ -535,6 +698,283 @@
     <span class="footer-logo">Platos 3D.cl</span>
     <span>model-viewer by Google</span>
   </footer>
+
+  <!-- ── CHAT WIDGET ── -->
+  <button class="chat-fab" id="chatFab" aria-label="Abrir asistente">
+    <svg class="chat-fab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <svg class="chat-fab-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-header">
+      <div class="chat-header-dot"></div>
+      <span class="chat-header-title">Asistente de platos</span>
+      <span class="chat-header-sub">IA · Online</span>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+      <!-- Mensaje inicial -->
+      <div class="msg assistant">
+        <div class="msg-bubble">
+          ¡Hola! Puedo ayudarte a encontrar el plato perfecto. Cuéntame qué buscas: ingredientes, restricciones dietéticas, tipo de cocina... 🍽️
+        </div>
+        <span class="msg-time">ahora</span>
+      </div>
+    </div>
+
+    <div class="chat-suggestions" id="chatSuggestions">
+      <button class="suggestion-chip" onclick="sendSuggestion('Platos con carne aptos para diabéticos')">🥩 Carne + diabético</button>
+      <button class="suggestion-chip" onclick="sendSuggestion('Opciones vegetarianas')">🥗 Vegetariano</button>
+      <button class="suggestion-chip" onclick="sendSuggestion('Sin gluten')">🌾 Sin gluten</button>
+      <button class="suggestion-chip" onclick="sendSuggestion('Platos bajos en calorías')">🔥 Bajo en calorías</button>
+    </div>
+
+    <div class="chat-input-row">
+      <textarea
+        class="chat-input"
+        id="chatInput"
+        placeholder="¿Qué tipo de plato buscas?"
+        rows="1"
+      ></textarea>
+      <button class="chat-send" id="chatSend">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="22" y1="2" x2="11" y2="13"/>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ── DATOS DE PLATOS (editar según tu menú real) ──
+    const MENU = [
+      {
+        id: "plato",
+        name: "Lomo Saltado",
+        src: "plato.glb",
+        descripcion: "Lomo de res salteado con cebolla morada, tomate y papas fritas, servido con arroz.",
+        ingredientes: ["carne de res", "cebolla", "tomate", "papa", "arroz", "ají amarillo", "soya"],
+        tags: ["carne", "peruano", "sin gluten"],
+        calorias: 520,
+        apto_diabetico: true,
+        vegetariano: false,
+        vegano: false,
+        sin_gluten: true,
+        sin_lactosa: true,
+      },
+      {
+        id: "platoB",
+        name: "Risotto de Champiñones",
+        src: "platoB.glb",
+        descripcion: "Risotto cremoso con mix de champiñones silvestres, parmesano y trufa negra.",
+        ingredientes: ["arroz arborio", "champiñones", "mantequilla", "queso parmesano", "trufa", "caldo vegetal"],
+        tags: ["vegetariano", "italiano", "cremoso"],
+        calorias: 410,
+        apto_diabetico: false,
+        vegetariano: true,
+        vegano: false,
+        sin_gluten: true,
+        sin_lactosa: false,
+      },
+      {
+        id: "platoC",
+        name: "Salmón al Horno",
+        src: "platoC.glb",
+        descripcion: "Filete de salmón con costra de hierbas, puré de coliflor y espárragos.",
+        ingredientes: ["salmón", "coliflor", "espárragos", "limón", "romero", "tomillo", "aceite de oliva"],
+        tags: ["pescado", "saludable", "keto"],
+        calorias: 350,
+        apto_diabetico: true,
+        vegetariano: false,
+        vegano: false,
+        sin_gluten: true,
+        sin_lactosa: true,
+      },
+      {
+        id: "platoD",
+        name: "Pasta Primavera Vegana",
+        src: "platoD.glb",
+        descripcion: "Pasta de espinaca con verduras de temporada, pesto de albahaca y piñones.",
+        ingredientes: ["pasta", "espinaca", "zucchini", "tomate cherry", "albahaca", "piñones", "ajo"],
+        tags: ["vegano", "vegetariano", "italiano"],
+        calorias: 380,
+        apto_diabetico: false,
+        vegetariano: true,
+        vegano: true,
+        sin_gluten: false,
+        sin_lactosa: true,
+      },
+      {
+        id: "modelado_test_A",
+        name: "Pollo a la Plancha",
+        src: "modelado_test_A.glb",
+        descripcion: "Pechuga de pollo a la plancha con quinoa, brócoli y salsa de yogur.",
+        ingredientes: ["pollo", "quinoa", "brócoli", "yogur natural", "limón", "especias"],
+        tags: ["carne blanca", "saludable", "proteico"],
+        calorias: 390,
+        apto_diabetico: true,
+        vegetariano: false,
+        vegano: false,
+        sin_gluten: true,
+        sin_lactosa: false,
+      }
+    ];
+
+    // ── SISTEMA DE PROMPT ──
+    const SYSTEM_PROMPT = `Eres el asistente gastronómico de Platos 3D.cl, un restaurante que ofrece experiencias culinarias con visualización 3D. Ayudas a los clientes a encontrar platos según sus preferencias, ingredientes y restricciones dietéticas.
+
+Tienes acceso al siguiente menú (en JSON):
+${JSON.stringify(MENU, null, 2)}
+
+Cuando el cliente pida recomendaciones o filtre platos:
+1. Analiza su solicitud (ingredientes, restricciones, preferencias)
+2. Responde con los IDs de los platos que coinciden usando este formato JSON al FINAL de tu respuesta:
+   PLATES_JSON:[{"id":"...","razon":"..."}]
+3. Si no hay coincidencias, explícalo amablemente y sugiere alternativas.
+4. Sé breve, cálido y gastronómico en el tono.
+5. Si preguntan algo que no es sobre el menú, redirige amablemente hacia los platos.
+6. Responde SIEMPRE en español.`;
+
+    // ── LÓGICA DEL CHAT ──
+    const fab = document.getElementById('chatFab');
+    const panel = document.getElementById('chatPanel');
+    const messagesEl = document.getElementById('chatMessages');
+    const inputEl = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('chatSend');
+
+    fab.addEventListener('click', () => {
+      fab.classList.toggle('open');
+      panel.classList.toggle('open');
+      if (panel.classList.contains('open')) inputEl.focus();
+    });
+
+    // Auto-resize textarea
+    inputEl.addEventListener('input', () => {
+      inputEl.style.height = 'auto';
+      inputEl.style.height = Math.min(inputEl.scrollHeight, 100) + 'px';
+    });
+
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
+    });
+    sendBtn.addEventListener('click', handleSend);
+
+    function sendSuggestion(text) {
+      inputEl.value = text;
+      handleSend();
+    }
+
+    function getTime() {
+      return new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function addMessage(role, content) {
+      const div = document.createElement('div');
+      div.className = `msg ${role}`;
+      div.innerHTML = `<div class="msg-bubble">${content}</div><span class="msg-time">${getTime()}</span>`;
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      return div;
+    }
+
+    function showTyping() {
+      const div = document.createElement('div');
+      div.className = 'msg assistant';
+      div.id = 'typingIndicator';
+      div.innerHTML = `<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function removeTyping() {
+      const el = document.getElementById('typingIndicator');
+      if (el) el.remove();
+    }
+
+    function renderPlates(plates) {
+      if (!plates.length) return '';
+      let html = '<div class="chat-plates-result">';
+      plates.forEach(({ id, razon }) => {
+        const p = MENU.find(m => m.id === id);
+        if (!p) return;
+        const allTags = [...p.tags, p.apto_diabetico ? 'apto diabético' : null, p.vegetariano ? 'vegetariano' : null, p.vegano ? 'vegano' : null, p.sin_gluten ? 'sin gluten' : null].filter(Boolean);
+        html += `<div class="chat-plate-card">
+          <div class="chat-plate-card-name">${p.name}</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:4px">${p.descripcion}</div>
+          <div style="font-size:11px;color:var(--muted)">${razon}</div>
+          <div class="chat-plate-card-tags">${allTags.map(t => `<span class="chat-plate-tag match">${t}</span>`).join('')}</div>
+        </div>`;
+      });
+      html += '</div>';
+      return html;
+    }
+
+    const conversationHistory = [];
+
+    async function handleSend() {
+      const text = inputEl.value.trim();
+      if (!text) return;
+
+      // Ocultar sugerencias tras primer mensaje
+      document.getElementById('chatSuggestions').style.display = 'none';
+
+      inputEl.value = '';
+      inputEl.style.height = 'auto';
+      sendBtn.disabled = true;
+
+      addMessage('user', text);
+      conversationHistory.push({ role: 'user', content: text });
+
+      showTyping();
+
+      try {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 1000,
+            system: SYSTEM_PROMPT,
+            messages: conversationHistory
+          })
+        });
+
+        const data = await res.json();
+        const rawText = data.content?.map(b => b.text || '').join('') || 'Sin respuesta.';
+
+        removeTyping();
+
+        // Extraer JSON de platos si existe
+        const jsonMatch = rawText.match(/PLATES_JSON:(\[[\s\S]*?\])/);
+        let plates = [];
+        let displayText = rawText;
+
+        if (jsonMatch) {
+          try {
+            plates = JSON.parse(jsonMatch[1]);
+            displayText = rawText.replace(/PLATES_JSON:\[[\s\S]*?\]/, '').trim();
+          } catch (e) {}
+        }
+
+        const platesHtml = renderPlates(plates);
+        const fullHtml = `<span>${displayText.replace(/\n/g, '<br>')}</span>${platesHtml ? '<br>' + platesHtml : ''}`;
+
+        addMessage('assistant', fullHtml);
+        conversationHistory.push({ role: 'assistant', content: rawText });
+
+      } catch (err) {
+        removeTyping();
+        addMessage('assistant', 'Hubo un error al conectar. Por favor intenta nuevamente.');
+      }
+
+      sendBtn.disabled = false;
+      inputEl.focus();
+    }
+  </script>
 
 </body>
 </html>
